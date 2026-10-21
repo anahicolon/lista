@@ -158,20 +158,13 @@
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+        <div class="w-full sm:w-auto">
           <button onclick="copyFullList()" class="w-full sm:w-auto bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow transition active:scale-95">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
             </svg>
             <span>Copiar Lista</span>
           </button>
-          
-          <a href="#" target="_blank" class="whatsapp-share-link w-full sm:w-auto bg-[#128C7E] hover:bg-[#075E54] text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-2 shadow transition active:scale-95">
-            <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.838.89 2.796.89 3.182 0 5.767-2.587 5.768-5.766.001-3.182-2.585-5.777-5.768-5.777zm3.411 8.21c-.144.405-.837.774-1.17.824-.312.045-.634.073-1.854-.429-1.464-.604-2.42-2.091-2.493-2.189-.072-.098-.593-.787-.593-1.501 0-.713.374-1.064.507-1.21.134-.146.292-.182.389-.182.098 0 .195.002.279.006.091.004.212-.034.331.252.122.292.417 1.018.454 1.091.036.073.06.159.012.256-.048.098-.073.159-.145.244-.073.085-.153.189-.219.255-.073.073-.149.153-.064.298.085.146.377.621.808 1.005.556.495 1.025.648 1.171.721.146.073.232.061.317-.037.085-.098.365-.425.463-.571.097-.146.195-.122.328-.073.134.049.851.401.997.474.146.073.243.11.279.171.036.061.036.353-.108.758z"/>
-            </svg>
-            <span>Enviar por WhatsApp</span>
-          </a>
         </div>
       </div>
 
@@ -218,15 +211,6 @@
     </div>
 
   </main>
-
-  <!-- Floating WhatsApp Quick Button for Mobile -->
-  <div class="fixed bottom-5 right-4 z-40 sm:hidden">
-    <a href="#" target="_blank" class="whatsapp-share-link bg-[#25D366] hover:bg-[#20ba5a] text-white p-3.5 rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition shadow-emerald-950/40" title="Enviar lista por WhatsApp">
-      <svg class="w-6 h-6 fill-current text-white" viewBox="0 0 24 24">
-        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.587 1.838.89 2.796.89 3.182 0 5.767-2.587 5.768-5.766.001-3.182-2.585-5.777-5.768-5.777zm3.411 8.21c-.144.405-.837.774-1.17.824-.312.045-.634.073-1.854-.429-1.464-.604-2.42-2.091-2.493-2.189-.072-.098-.593-.787-.593-1.501 0-.713.374-1.064.507-1.21.134-.146.292-.182.389-.182.098 0 .195.002.279.006.091.004.212-.034.331.252.122.292.417 1.018.454 1.091.036.073.06.159.012.256-.048.098-.073.159-.145.244-.073.085-.153.189-.219.255-.073.073-.149.153-.064.298.085.146.377.621.808 1.005.556.495 1.025.648 1.171.721.146.073.232.061.317-.037.085-.098.365-.425.463-.571.097-.146.195-.122.328-.073.134.049.851.401.997.474.146.073.243.11.279.171.036.061.036.353-.108.758z"/>
-      </svg>
-    </a>
-  </div>
 
   <!-- Excel Update & Sync Modal -->
   <div id="syncModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-3 backdrop-blur-xs">
