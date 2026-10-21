@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const parser = require('./excel_parser');
+const promoModule = require('./promo_list');
 
 const app = express();
 const BASE_DIR = __dirname;
@@ -36,12 +37,16 @@ function loadConfig() {
 
 let config = loadConfig();
 let catalogCache = null;
+let promoCache = null;
 let clientsSSE = [];
 
 function reloadCatalog() {
   try {
     delete require.cache[require.resolve('./excel_parser')];
+    delete require.cache[require.resolve('./promo_list')];
     const currentParser = require('./excel_parser');
+    const currentPromo = require('./promo_list');
+
     const filePath = currentParser.findExcelFile(BASE_DIR);
     if (!filePath) {
       console.warn('Advertencia: No se encontró Tablet ultima.xlsx ni Tablet ultima.xls');
@@ -49,7 +54,11 @@ function reloadCatalog() {
     }
     console.log('Cargando catálogo desde:', filePath);
     catalogCache = currentParser.parseCatalog(filePath);
-    console.log(`Catálogo cargado: ${catalogCache.totalProducts} productos, ${catalogCache.matchedFromCodigos} códigos internos.`);
+    promoCache = currentPromo.buildPromoList(catalogCache.products, {
+      lastModified: catalogCache.lastModified
+    });
+    console.log(`Catálogo cargado: ${catalogCache.totalProducts} productos, ${catalogCache.matchedFromCodigos || catalogCache.totalProducts} códigos internos.`);
+    console.log(`Lista Promo WhatsApp generada con ${promoCache.totalItemsCount} artículos.`);
 
     // Notify connected SSE clients
     notifyClients({
@@ -154,6 +163,27 @@ app.get('/api/products', (req, res) => {
     },
     rubros: catalogCache.rubros,
     products: catalogCache.products
+  });
+});
+
+// API: Get formatted WhatsApp promo list with live prices
+app.get('/api/promolist', (req, res) => {
+  if (!catalogCache || !promoCache) {
+    const ok = reloadCatalog();
+    if (!ok || !promoCache) {
+      return res.status(500).json({ error: 'No se pudo cargar la lista. Asegúrese de que Tablet ultima.xlsx o Tablet ultima.xls exista en c:\\gestion.' });
+    }
+  }
+
+  res.json({
+    config,
+    metadata: {
+      fileName: catalogCache.fileName,
+      lastModified: catalogCache.lastModified,
+      totalProducts: catalogCache.totalProducts,
+      sheetName: catalogCache.sheetName
+    },
+    promo: promoCache
   });
 });
 
