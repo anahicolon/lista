@@ -1,0 +1,28 @@
+============================================================
+ACTUALIZADOR DE PRECIOS PARA OTRA COMPUTADORA (Windows 7 / 10 / 11)
+Colón Anahí Embalajes
+============================================================
+
+¿Cómo usar esta carpeta en otra computadora?
+
+1. Copie toda esta carpeta "Actualizador_Windows_7" completa
+   (en un pendrive, por WhatsApp, Google Drive, etc.)
+   y péguela en el Escritorio de la otra computadora.
+
+2. En esa otra computadora, asegúrese de que el archivo Excel
+   esté guardado en:
+   D:\DATOS\Trabajo\Tablet ultima.xls (o .xlsx)
+
+3. Cada vez que modifique los precios en el Excel, simplemente
+   haga DOBLE CLIC en:
+   
+   👉 Actualizar.bat
+
+4. ¡Y listo! En 3 segundos los precios se actualizan en vivo en:
+   - Catálogo:    https://lista-rpuy.onrender.com
+   - WhatsApp:    https://lista-rpuy.onrender.com/lista.html
+
+NOTAS:
+- NO requiere instalar Node.js ni ningún programa especial.
+- Funciona en Windows 7 (32 bits y 64 bits), Windows 8, 10 y 11.
+============================================================
