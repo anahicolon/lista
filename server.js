@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const parser = require('./excel_parser');
 const promoModule = require('./promo_list');
+const { uploadToRender } = require('./sync_render');
 
 const app = express();
 const BASE_DIR = __dirname;
@@ -78,6 +79,13 @@ function reloadCatalog() {
       lastModified: catalogCache.lastModified,
       fileName: catalogCache.fileName
     });
+
+    // Auto-sync to Render if running locally on PC
+    if (!process.env.RENDER) {
+      uploadToRender(filePath)
+        .then(res => console.log(`✅ [Online] Sincronizado automáticamente con Render. Total: ${res.totalProducts}`))
+        .catch(err => console.warn(`Nota: Sincronización online diferida (${err.message})`));
+    }
     return true;
   } catch (err) {
     console.error('Error al cargar catálogo desde Excel:', err);
