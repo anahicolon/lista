@@ -110,7 +110,7 @@ const PROMO_SECTIONS = [
     items: [
       { text: 'VASOS x 220cc x 100', code: 'V20', fallbackPrice: 4420, prefix: '🥛 ' },
       { text: 'VASOS x 330cc x 100', code: 'V30', fallbackPrice: 5420, prefix: '🥛 ' },
-      { text: 'VASOS x 500cc', code: 'V50', fallbackPrice: 85, suffix: ' c/u', prefix: '🥛 ' },
+      { text: 'VASOS x 500cc', code: 'V50N1', fallbackPrice: 85, suffix: ' c/u', prefix: '🥛 ' },
       { text: 'VASOS x 800cc', code: 'V80B', fallbackPrice: 145, suffix: ' c/u', prefix: '🥛 ' },
       { text: 'VASOS x 1000cc', code: 'V10B', fallbackPrice: 185, suffix: ' c/u', prefix: '🥛 ' }
     ]
