@@ -67,8 +67,8 @@ const PROMO_SECTIONS = [
     icon: '🎞️',
     title: 'FILM P.V.C.',
     items: [
-      { text: 'FILM P.V.C. x300 mts:', code: 'REPC', fallbackPrice: 10150, prefix: '🎞️ ' },
-      { text: 'FILM P.V.C Eco', code: 'REPC', fallbackPrice: 6890, prefix: '🎞️ ' },
+      { text: 'FILM P.V.C. x300 mts:', code: 'REPC', fallbackPrice: 12275, prefix: '🎞️ ' },
+      { text: 'FILM P.V.C Eco', code: 'REPE', fallbackPrice: 10156, prefix: '🎞️ ' },
       { text: 'FILM familiar x 30mts', code: 'PVCE', fallbackPrice: 1400, prefix: '🎞️ ' }
     ]
   },
