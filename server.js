@@ -49,7 +49,7 @@ function reloadCatalog() {
 
     const filePath = currentParser.findExcelFile(BASE_DIR);
     if (!filePath) {
-      console.warn('Advertencia: No se encontró Tablet ultima.xlsx ni Tablet ultima.xls');
+      console.warn('Advertencia: No se encontró Tablet ultima.xlsx ni Tablet ultima.xls en D:\\DATOS\\Trabajo ni en ' + BASE_DIR);
       return false;
     }
     console.log('Cargando catálogo desde:', filePath);
@@ -59,6 +59,17 @@ function reloadCatalog() {
     });
     console.log(`Catálogo cargado: ${catalogCache.totalProducts} productos, ${catalogCache.matchedFromCodigos || catalogCache.totalProducts} códigos internos.`);
     console.log(`Lista Promo WhatsApp generada con ${promoCache.totalItemsCount} artículos.`);
+
+    // If loaded from D:\DATOS\Trabajo, sync copy to BASE_DIR so git repo has the latest Excel
+    try {
+      const destInBase = path.join(BASE_DIR, path.basename(filePath));
+      if (path.resolve(filePath).toLowerCase() !== path.resolve(destInBase).toLowerCase()) {
+        fs.copyFileSync(filePath, destInBase);
+        console.log(`Copia sincronizada a la carpeta local del proyecto: ${destInBase}`);
+      }
+    } catch (eSync) {
+      console.warn('Nota de sincronización local:', eSync.message);
+    }
 
     // Notify connected SSE clients
     notifyClients({
@@ -84,22 +95,34 @@ reloadCatalog();
 
 // Watch for file modifications
 function setupFileWatcher() {
+  const watchDirs = [];
+  const primaryDir = 'D:\\DATOS\\Trabajo';
+  if (fs.existsSync(primaryDir)) watchDirs.push(primaryDir);
+  if (!watchDirs.includes(BASE_DIR)) watchDirs.push(BASE_DIR);
+
   const watchFiles = ['Tablet ultima.xlsx', 'Tablet ultima.xls'];
-  watchFiles.forEach(fn => {
-    const fp = path.join(BASE_DIR, fn);
-    if (fs.existsSync(fp)) {
-      let fsTimeout = null;
-      fs.watch(fp, (eventType) => {
-        if (!fsTimeout) {
-          fsTimeout = setTimeout(() => {
-            fsTimeout = null;
-            console.log(`Detectado cambio en ${fn}, recargando precios...`);
-            reloadCatalog();
-          }, 1000);
+  let fsTimeout = null;
+
+  watchDirs.forEach(dir => {
+    watchFiles.forEach(fn => {
+      const fp = path.join(dir, fn);
+      if (fs.existsSync(fp)) {
+        try {
+          fs.watch(fp, (eventType) => {
+            if (!fsTimeout) {
+              fsTimeout = setTimeout(() => {
+                fsTimeout = null;
+                console.log(`Detectado cambio en ${fp}, recargando precios...`);
+                reloadCatalog();
+              }, 1000);
+            }
+          });
+          console.log('Vigilando cambios en:', fp);
+        } catch (e) {
+          console.warn('No se pudo vigilar:', fp, e.message);
         }
-      });
-      console.log('Vigilando cambios en:', fp);
-    }
+      }
+    });
   });
 }
 setupFileWatcher();
@@ -149,7 +172,7 @@ app.get('/api/products', (req, res) => {
   if (!catalogCache) {
     const ok = reloadCatalog();
     if (!ok || !catalogCache) {
-      return res.status(500).json({ error: 'No se pudo cargar el archivo Excel. Asegúrese de que Tablet ultima.xlsx o Tablet ultima.xls exista en c:\\gestion.' });
+      return res.status(500).json({ error: 'No se pudo cargar el archivo Excel. Asegúrese de que Tablet ultima.xlsx o Tablet ultima.xls exista en D:\\DATOS\\Trabajo o en la carpeta del proyecto.' });
     }
   }
 
@@ -171,7 +194,7 @@ app.get('/api/promolist', (req, res) => {
   if (!catalogCache || !promoCache) {
     const ok = reloadCatalog();
     if (!ok || !promoCache) {
-      return res.status(500).json({ error: 'No se pudo cargar la lista. Asegúrese de que Tablet ultima.xlsx o Tablet ultima.xls exista en c:\\gestion.' });
+      return res.status(500).json({ error: 'No se pudo cargar la lista. Asegúrese de que Tablet ultima.xlsx o Tablet ultima.xls exista en D:\\DATOS\\Trabajo o en la carpeta del proyecto.' });
     }
   }
 
@@ -222,6 +245,19 @@ app.post('/api/upload', upload.single('excel'), (req, res) => {
       return res.status(400).json({ success: false, error: 'No se subió ningún archivo.' });
     }
     console.log('Nuevo archivo Excel subido:', req.file.filename);
+
+    // Also mirror to D:\DATOS\Trabajo if available on local machine
+    const primaryDir = 'D:\\DATOS\\Trabajo';
+    if (fs.existsSync(primaryDir)) {
+      try {
+        const destInPrimary = path.join(primaryDir, req.file.filename);
+        fs.copyFileSync(path.join(BASE_DIR, req.file.filename), destInPrimary);
+        console.log(`Copia guardada en: ${destInPrimary}`);
+      } catch (eCopy) {
+        console.warn('Nota de guardado en D:\\DATOS\\Trabajo:', eCopy.message);
+      }
+    }
+
     const ok = reloadCatalog();
     if (ok) {
       setupFileWatcher();

@@ -46,11 +46,35 @@ function classifyRubro(section, desc) {
 }
 
 function findExcelFile(baseDir) {
-  const xlsxPath = path.join(baseDir, 'Tablet ultima.xlsx');
-  const xlsPath = path.join(baseDir, 'Tablet ultima.xls');
-  if (fs.existsSync(xlsxPath)) return xlsxPath;
-  if (fs.existsSync(xlsPath)) return xlsPath;
-  return null;
+  const primaryDir = 'D:\\DATOS\\Trabajo';
+  const checkDirs = [];
+  if (fs.existsSync(primaryDir)) {
+    checkDirs.push(primaryDir);
+  }
+  if (baseDir && !checkDirs.includes(baseDir)) {
+    checkDirs.push(baseDir);
+  }
+
+  const candidates = [];
+  for (const dir of checkDirs) {
+    const xlsxPath = path.join(dir, 'Tablet ultima.xlsx');
+    const xlsPath = path.join(dir, 'Tablet ultima.xls');
+    if (fs.existsSync(xlsxPath)) candidates.push(xlsxPath);
+    if (fs.existsSync(xlsPath)) candidates.push(xlsPath);
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Return the file with the newest modification time
+  candidates.sort((a, b) => {
+    try {
+      return fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs;
+    } catch (e) {
+      return 0;
+    }
+  });
+
+  return candidates[0];
 }
 
 /**

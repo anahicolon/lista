@@ -2,7 +2,7 @@
 title Catalogo de Precios - Lista Oferta A
 echo =======================================================
 echo   Iniciando Catalogo de Precios - Lista Oferta A
-echo   Sincronizado con: C:\gestion\Tablet ultima.xlsx / .xls
+echo   Sincronizado con: D:\DATOS\Trabajo\Tablet ultima.xlsx / .xls
 echo =======================================================
 echo.
 
