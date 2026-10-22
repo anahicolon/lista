@@ -460,10 +460,16 @@ function removeFromCart(productId) {
 function clearCart() {
   if (confirm('¿Desea vaciar el pedido completo?')) {
     STATE.cart = [];
+    // Clear client name and notes fields
+    const nameInput = document.getElementById('orderClientName');
+    const notesInput = document.getElementById('orderNotes');
+    if (nameInput) nameInput.value = '';
+    if (notesInput) notesInput.value = '';
     saveLocalCart();
     renderCartModal();
   }
 }
+
 
 function updateCartBadge() {
   const totalCount = STATE.cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -547,7 +553,46 @@ function renderCartModal() {
   totalEl.textContent = formatMoney(total);
 }
 
-function sendOrderWhatsapp() {
+
+  if (STATE.cart.length === 0) {
+    showToast('El pedido está vacío', 'error');
+    return;
+  }
+
+  const clientName = document.getElementById('orderClientName').value.trim();
+  const notes = document.getElementById('orderNotes').value.trim();
+  const phone = STATE.config.whatsappPhone || '5493442466032';
+
+  // Build message header
+  let msg = `🛒 *PEDIDO - ${STATE.config.title || 'LISTA OFERTA A'}*\n`;
+  msg += `--------------------------------------\n`;
+
+  let total = 0;
+  STATE.cart.forEach(item => {
+    const sub = item.quantity * item.product.price;
+    total += sub;
+    const pack = item.product.presentation ? ` (${item.product.presentation})` : '';
+    // Item line with subtotal
+    msg += `• *${item.quantity}x* [${item.product.code}] ${item.product.name}${pack}\\n  Subtotal: ${formatMoney(sub)}\\n`;
+  });
+
+  msg += `--------------------------------------\n`;
+  msg += `*Total Estimado:* ${formatMoney(total)}\\n\\n`;
+
+  // Apply 5% discount for orders > $50.000
+  if (total > 50000) {
+    const discount = total * 0.05;
+    const totalWithDiscount = total - discount;
+    msg += `* 5% de descuento pagando en efectivo por compras mayores a $50.000*\\n`;
+    msg += `Descuento de -5%= ${formatMoney(discount)} Total ${formatMoney(totalWithDiscount)}\\n\\n`;
+  }
+
+  if (clientName) msg += `👤 *Cliente:* ${clientName}\\n`;
+  if (notes) msg += `📝 *Notas:* ${notes}\\n`;
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
   if (STATE.cart.length === 0) {
     showToast('El pedido está vacío', 'error');
     return;
