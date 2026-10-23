@@ -584,7 +584,7 @@ function sendOrderWhatsapp() {
   if (total > 50000) {
     const discount = total * 0.05;
     const totalWithDiscount = total - discount;
-    msg += `\n* 5% de descuento pagando en efectivo por compras mayores a $50.000*\n`;
+    msg += `\n*5% de descuento pagando en efectivo por compras mayores a $50.000*\n`;
     msg += `Descuento de -5%= ${formatMoney(totalWithDiscount)} Total\n`;
   }
 
